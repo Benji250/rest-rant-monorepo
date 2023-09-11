@@ -26,18 +26,33 @@ router.post('/', async (req, res) => {
 
 ___
 ___
+___
 router.get('/profile', async (req, res) => {
     try {
-        let user = await User.findOne({
-            where: {
-                userId: req.session.userid
-            }
-        })
-        res.json(user)
+      
+        const [authenticationMethod, token] = req.headers.authorization.split(' ')
+        
+        if (authenticationMethod == 'Bearer') {
+
+            // Decode the JWT
+            const result = await jwt.decode(process.env.JWT_SECRET, token)
+
+            // Get the logged in user's id from the payload
+            const { id } = result.value
+
+            // Find the user object using their id:
+            let user = await User.findOne({
+                where: {
+                    userId: id
+                }
+            })
+            res.json(user)
+        }
     } catch {
         res.json(null)
     }
 })
+
 
 
 
