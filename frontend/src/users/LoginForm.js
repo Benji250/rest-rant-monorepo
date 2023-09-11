@@ -20,6 +20,7 @@ function LoginForm() {
     async function handleSubmit(e) {
         const response = await fetch(`http://localhost:5000/authentication/`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -30,6 +31,7 @@ function LoginForm() {
     
         if (response.status === 200) {
             setCurrentUser(data.user)
+            console.log(data.token)
             history.push(`/`)
         } else {
             setErrorMessage(data.message)
